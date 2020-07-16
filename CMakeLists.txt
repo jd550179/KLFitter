@@ -102,6 +102,7 @@ set( lib_headers
   include/KLFitter/Fitter.h
   include/KLFitter/LikelihoodBase.h
   include/KLFitter/LikelihoodSgTopWtLJ.h
+  include/KLFitter/LikelihoodSgTopTChannelLepton.h
   include/KLFitter/LikelihoodTTHLeptonJets.h
   include/KLFitter/LikelihoodTTZTrilepton.h
   include/KLFitter/LikelihoodTopAllHadronic.h
@@ -126,6 +127,7 @@ set( lib_sources
   src/Fitter.cxx
   src/LikelihoodBase.cxx
   src/LikelihoodSgTopWtLJ.cxx
+  src/LikelihoodSgTopTChannelLepton.cxx
   src/LikelihoodTTHLeptonJets.cxx
   src/LikelihoodTTZTrilepton.cxx
   src/LikelihoodTopAllHadronic.cxx
@@ -225,6 +227,8 @@ endmacro( KLFitter_add_executable )
 option( INSTALL_EXAMPLES "Install the example executable(s) of KLFitter" ON )
 if( INSTALL_EXAMPLES )
   KLFitter_add_executable( example-top-ljets.exe util/example-top-ljets.cxx )
+  KLFitter_add_executable( example-top-tchannel.exe util/example-top-tchannel.cxx )
+
 endif()
 
 # Install the CMake description of the project.
