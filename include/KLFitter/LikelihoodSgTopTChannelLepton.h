@@ -234,6 +234,7 @@ class LikelihoodSgTopTChannelLepton : public KLFitter::LikelihoodBase {
     */
   double SumET;
 
+  double initial_pz;
   /**
     * An index deciding if the event is electron (1) or muon (2) plus
     * jets.

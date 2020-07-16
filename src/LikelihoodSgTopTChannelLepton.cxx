@@ -315,43 +315,74 @@ double KLFitter::LikelihoodSgTopTChannelLepton::LogLikelihood(const std::vector<
 
   // jet energy resolution terms
   logprob += fResEnergyB->logp(b_fit_e, b_meas_e, &TFgoodTmp);
+  std::cout << "b E\t"<< b_fit_e << "\t" << b_meas_e <<  "\tprobability:\t" << fResEnergyB->logp(b_fit_e, b_meas_e, &TFgoodTmp) << std::endl;
+
+  //std::cout << "fResEnergyB->logp(b_fit_e, b_meas_e, &TFgoodTmp):\t" << fResEnergyB->logp(b_fit_e, b_meas_e, &TFgoodTmp) <<std::endl;
   if (!TFgoodTmp) fTFgood = false;
 
   logprob += fResEnergyLQ1->logp(lq1_fit_e, lq1_meas_e, &TFgoodTmp);
+  std::cout << "lq e\t"<< lq1_fit_e << "\t" << lq1_meas_e << "\tprobability:\t" << fResEnergyLQ1->logp(lq1_fit_e, lq1_meas_e, &TFgoodTmp) << std::endl;
+
+  //std::cout << "fResEnergyLQ1->logp(lq1_fit_e, lq1_meas_e, &TFgoodTmp):\t" << fResEnergyLQ1->logp(lq1_fit_e, lq1_meas_e, &TFgoodTmp)<<std::endl;
+
   if (!TFgoodTmp) fTFgood = false;
 
   // lepton energy resolution terms
   if (fTypeLepton == kElectron) {
     logprob += fResLepton->logp(lep_fit_e, lep_meas_e, &TFgoodTmp);
+    std::cout << "lep_pt electron\t" << lep_fit_e* lep_meas_sintheta << "\t" << lep_meas_pt<< "\tprobability:\t" << fResLepton->logp(lep_fit_e* lep_meas_sintheta, lep_meas_pt, &TFgoodTmp) << std::endl;
+
   } else if (fTypeLepton == kMuon) {
     logprob += fResLepton->logp(lep_fit_e* lep_meas_sintheta, lep_meas_pt, &TFgoodTmp);
+    std::cout << "lep_pt\t" << lep_fit_e* lep_meas_sintheta << "\t" << lep_meas_pt<< "\tprobability:\t" << fResLepton->logp(lep_fit_e* lep_meas_sintheta, lep_meas_pt, &TFgoodTmp) << std::endl;
+
   }
   if (!TFgoodTmp) fTFgood = false;
 
   // neutrino px and py
+  //std::cout <<"neutrino p_x:\t" << nu_fit_px << "Etmiss p_x:\t" << ETmiss_x << std::endl;
+  //std::cout <<"neutrino p_y:\t" << nu_fit_py << "Etmiss p_y:\t" << ETmiss_y << std::endl;
+  //std::cout <<"neutrino p_z:\t" << nu_fit_pz << std::endl;
+
   logprob += fResMET->logp(nu_fit_px, ETmiss_x, &TFgoodTmp, SumET);
+  std::cout <<"nu px\t" << nu_fit_px << "\t" << ETmiss_x <<"\tprobability:\t" << fResMET->logp(nu_fit_px, ETmiss_x, &TFgoodTmp, SumET) <<std::endl;
+
   if (!TFgoodTmp) fTFgood = false;
   logprob += fResMET->logp(nu_fit_py, ETmiss_y, &TFgoodTmp, SumET);
+  std::cout << "nu py\t" <<nu_fit_py << "\t" << ETmiss_y << "\tprobability:\t" << fResMET->logp(nu_fit_py, ETmiss_y, &TFgoodTmp, SumET) << std::endl;
+
+  std::cout << "nu pz\t" <<nu_fit_pz << "\t, sumET:\t" <<SumET << std::endl;
+
   if (!TFgoodTmp) fTFgood = false;
 
   // physics constants
   double massW = fPhysicsConstants.MassW();
   double gammaW = fPhysicsConstants.GammaW();
   double massTop = fPhysicsConstants.MassTop();
-  double gammaTop = fPhysicsConstants.GammaTop();
+  double gammaTop = 4*fPhysicsConstants.GammaTop();
 
   // Breit-Wigner of leptonically decaying W-boson
   logprob += BCMath::LogBreitWignerRel(wlep_fit_m, massW, gammaW);
+  std::cout <<"W M\t" << wlep_fit_m << "\t" << massW << "\tprobability:\t" << BCMath::LogBreitWignerRel(wlep_fit_m, massW, gammaW) << std::endl;
+
+  //std::cout << "BCMath::LogBreitWignerRel(wlep_fit_m, massW, gammaW):\t" << BCMath::LogBreitWignerRel(wlep_fit_m, massW, gammaW)<<std::endl;
+
 
   logprob += BCMath::LogBreitWignerRel(tlep_fit_m, massTop, gammaTop);
+  std::cout <<"W top\t" << tlep_fit_m << "\t" << massTop << "\tprobability:\t" << BCMath::LogBreitWignerRel(tlep_fit_m, massTop, gammaTop) << std::endl;
+
 
   //balance full pt of the event out. Check if this is beneficial, might not be if missing jets.
   //logprob += BCMath::LogGaus(lep_fit_px+nu_fit_px+b_fit_px+lq1_fit_px, 0, 10,true); //find out the width of this thing
   //logprob += BCMath::LogGaus(lep_fit_py+nu_fit_py+b_fit_py+lq1_fit_py, 0, 10,true); //find out the width of this thing
 
+
+
   //TODO set balance constrain
 
   // return log of likelihood
+  std::cout <<"logprob:\t" << logprob << std::endl;
+  std::cout<< "--------------------------------------------------"<<std::endl;
   return logprob;
 }
 
@@ -375,27 +406,44 @@ std::vector<double> KLFitter::LikelihoodSgTopTChannelLepton::GetInitialParameter
 
   // check neutrino solutions
   std::vector<double> neutrino_pz_solutions = GetNeutrinoPzSolutions();
+  values[parNuPx] = ETmiss_x;
+  values[parNuPy] = ETmiss_y;
+
   if (neutrino_pz_solutions.size() == 1) {
+    std::cout << "only 1 solution:\t" <<neutrino_pz_solutions.at(0)<<std::endl;
+
     values[parNuPz] = neutrino_pz_solutions.at(0);
   } else if (neutrino_pz_solutions.size() == 2) {
 
       double sol1, sol2;
       values[parNuPz] = neutrino_pz_solutions.at(0);
       sol1 = LogLikelihood(values);
+      std::cout << "solution1:\t" <<neutrino_pz_solutions.at(0) <<"\t probablity:\t" << sol1 <<std::endl;
+      std::cout << "---------------------------------------------------"<< std::endl;
+
       values[parNuPz] = neutrino_pz_solutions.at(1);
       sol2 = LogLikelihood(values);
+      std::cout << "solution2:\t" <<neutrino_pz_solutions.at(1) <<"\t probablity:\t" << sol2 <<std::endl;
+      std::cout << "---------------------------------------------------"<< std::endl;
+
       if (sol1 > sol2) {
         values[parNuPz] = neutrino_pz_solutions.at(0);
       }
+      else{
+        values[parNuPz] = neutrino_pz_solutions.at(1);
+      }
   } else {
     // scaleMET method
+    std::cout << "i am scaling the MET"<< std::endl;
     TLorentzVector* lepton = GetLepton(*fParticlesPermuted);
     KLFitter::PhysicsConstants constants;
     double mW = constants.MassW();
     double cosDeltaPhi = (lepton->Px()*ETmiss_x + lepton->Py()*ETmiss_y) / (lepton->Perp() * sqrt(ETmiss_x * ETmiss_x + ETmiss_y * ETmiss_y));
     values[parNuPz] = mW * mW * lepton->Pz() / (2 * lepton->Perp2()*(1 - cosDeltaPhi));
-  }
 
+
+  }
+  initial_pz = values[parNuPz];
   // return the vector
   return values;
 }
@@ -409,6 +457,10 @@ std::vector<double> KLFitter::LikelihoodSgTopTChannelLepton::GetNeutrinoPzSoluti
   double mE = 0.;
 
   TLorentzVector* lepton = GetLepton(*fParticlesPermuted);
+  if (fTypeLepton == kMuon){
+    mE = lepton->M();
+  }
+
 
   double px_c = lepton->Px();
   double py_c = lepton->Py();
@@ -417,16 +469,66 @@ std::vector<double> KLFitter::LikelihoodSgTopTChannelLepton::GetNeutrinoPzSoluti
 
   double px_nu = ETmiss_x;
   double py_nu = ETmiss_y;
-  double alpha = constants.MassW()*constants.MassW() - mE*mE + 2*(px_c*px_nu + py_c*py_nu);
+  double MeT_old = sqrt(ETmiss_x*ETmiss_x+ETmiss_y*ETmiss_y);
+  double cos_phi = ETmiss_x/(MeT_old);
+  double sin_phi = ETmiss_y/(MeT_old);
 
-  double a = pz_c*pz_c - Ec*Ec;
+  double alpha = -constants.MassW()*constants.MassW() + mE*mE - 2*(px_c*px_nu + py_c*py_nu);
+
+  double a =  Ec*Ec - pz_c*pz_c;
   double b = alpha * pz_c;
-  double c = - Ec*Ec * (px_nu*px_nu + py_nu*py_nu) + alpha*alpha/4.;
+  double c = Ec*Ec * (px_nu*px_nu + py_nu*py_nu) - alpha*alpha/4.;
 
   double discriminant = b*b - 4*a*c;
-  if (discriminant < 0.)
-    return pz;
+  if (discriminant < 0.){
+    std::cout << "scaling met"<< std::endl;
 
+
+    // try the Mathematica expressions
+    Double_t TermMET_a = Ec*Ec - pz_c*pz_c - (px_c*cos_phi+py_c*sin_phi)*(px_c*cos_phi+py_c*sin_phi);
+    Double_t TermMET_b = (mE*mE - constants.MassW()*constants.MassW()) * (px_c*cos_phi+py_c*sin_phi);
+    Double_t TermMET_sqrt = (mE*mE-constants.MassW()*constants.MassW())*sqrt(Ec*Ec-pz_c*pz_c);
+
+    Double_t NewMET_Sol[2] = {0.};
+    NewMET_Sol[0] = (-TermMET_b+(TermMET_sqrt))/(2*TermMET_a);
+    NewMET_Sol[1] = (-TermMET_b-(TermMET_sqrt))/(2*TermMET_a);
+
+    // Default new MET set to 0
+    double MeT = 0.;
+
+    // now choose the physical (positive) solution
+    if (NewMET_Sol[0]>0. && NewMET_Sol[1]<0.) { MeT = NewMET_Sol[0];}
+    if (NewMET_Sol[0]<0. && NewMET_Sol[1]>0.) { MeT = NewMET_Sol[1];}
+
+    // if both solutions are negative, then there is a real problem with this event
+    if (NewMET_Sol[0]<0. && NewMET_Sol[1]<0.) { return pz;}
+
+    // if both solutions are positive, the closer solution to the initial MET is chosen
+    if (NewMET_Sol[0]>0. && NewMET_Sol[1]>0.) {
+      MeT = (abs(MeT_old-NewMET_Sol[0]) < abs(MeT_old-NewMET_Sol[1])) ? NewMET_Sol[0] : NewMET_Sol[1];
+    }
+
+    while (discriminant<0) {
+          MeT -= 0.000000000001; // in GeV
+          px_nu = MeT*cos_phi;
+          py_nu = MeT*sin_phi;
+
+          // with the new MET one has to recompute the PxN, PyN and TMath::Power(MET,2) and the Term_B, Term_Sqrt
+          alpha = -constants.MassW()*constants.MassW() + mE*mE - 2*(px_c*px_nu + py_c*py_nu);
+
+          a =  Ec*Ec - pz_c*pz_c;
+          b = alpha * pz_c;
+          c = Ec*Ec * (px_nu*px_nu + py_nu*py_nu) - alpha*alpha/4.;
+
+          discriminant = b*b - 4*a*c;
+    }
+    ETmiss_x = px_nu;
+    std::cout << "py_nu:\t"<< py_nu<<std::endl;
+    ETmiss_y = py_nu;
+    //std::cout << "ETmiss_x:\t" << ETmiss_x << std::endl;
+    //std::cout << "ETmiss_y:\t" << ETmiss_y << std::endl;
+
+  }
   double pz_offset = - b / (2*a);
 
   double squareRoot = sqrt(discriminant);
