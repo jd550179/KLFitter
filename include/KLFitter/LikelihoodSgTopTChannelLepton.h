@@ -93,7 +93,7 @@ class LikelihoodSgTopTChannelLepton : public KLFitter::LikelihoodBase {
   /**
     * Enumerator for the parameters.
     */
-  enum Parameters { parBE, parLQ1E, parLQ2E, parLepE, parNuPx, parNuPy, parNuPz };
+  enum Parameters { parBE, parLQ1E, parLepE, parNuPx, parNuPy, parNuPz };
 
   /**
     * Set the values for the missing ET x and y components and the SumET.
