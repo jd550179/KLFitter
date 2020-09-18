@@ -96,6 +96,7 @@ set( lib_headers
   include/KLFitter/BoostedLikelihoodTopLeptonJets.h
   include/KLFitter/DetectorAtlas_7TeV.h
   include/KLFitter/DetectorAtlas_8TeV.h
+  include/KLFitter/DetectorAtlas_13TeV.h
   include/KLFitter/DetectorAtlas_CrystalBall.h
   include/KLFitter/DetectorSnowmass.h
   include/KLFitter/DetectorBase.h
@@ -121,6 +122,7 @@ set( lib_sources
   src/BoostedLikelihoodTopLeptonJets.cxx
   src/DetectorAtlas_7TeV.cxx
   src/DetectorAtlas_8TeV.cxx
+  src/DetectorAtlas_13TeV.cxx
   src/DetectorAtlas_CrystalBall.cxx
   src/DetectorSnowmass.cxx
   src/DetectorBase.cxx
@@ -148,6 +150,7 @@ set( lib_sources
   src/ResDoubleGaussE_3.cxx
   src/ResDoubleGaussE_4.cxx
   src/ResDoubleGaussE_5.cxx
+  src/ResDoubleGaussE_6.cxx
   src/ResDoubleGaussPt.cxx
   src/ResGauss.cxx
   src/ResGaussE.cxx

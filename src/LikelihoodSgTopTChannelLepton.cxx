@@ -350,8 +350,8 @@ double KLFitter::LikelihoodSgTopTChannelLepton::LogLikelihood(const std::vector<
 
 
   //balance full pt of the event out. Check if this is beneficial, might not be if missing jets.
-  //logprob += BCMath::LogGaus(lep_fit_px+nu_fit_px+b_fit_px+lq1_fit_px, 0, 10,true); //find out the width of this thing
-  //logprob += BCMath::LogGaus(lep_fit_py+nu_fit_py+b_fit_py+lq1_fit_py, 0, 10,true); //find out the width of this thing
+  logprob += BCMath::LogGaus(lep_fit_px+nu_fit_px+b_fit_px+lq1_fit_px, 0, 15,true); //find out the width of this thing
+  logprob += BCMath::LogGaus(lep_fit_py+nu_fit_py+b_fit_py+lq1_fit_py, 0, 15,true); //find out the width of this thing
 
   // return log of likelihood
   return logprob;
